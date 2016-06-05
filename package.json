@@ -1,0 +1,11 @@
+{
+  "name": "electron_threejs_starter_application",
+  "version": "0.0.1",
+  "main": "main.js",
+  "description": "Setup to get start coding with Electron and Three.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matthew Cliatt",
+  "license": "ISC"
+}
