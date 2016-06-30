@@ -12,7 +12,10 @@ const gridLayers = 5;
 const cubeSize = 1;
 const spacing = 2;
 
+const gridContainer = new THREE.Object3D();
+
 const grid = [];
+
 
 init();
 createWorld();
@@ -91,14 +94,16 @@ function createWorld() {
           k * (spacing + cubeSize) - midpoint.z
         );
 
-        scene.add(cube);
         grid[i][j].push(cube);
+        gridContainer.add(cube);
 
       }
 
     }
 
   }
+
+  scene.add(gridContainer);
 
   // This creates a line on each axis, from -100 to 100.
   for (let i = 0; i < 3 /* you */; i++) {
@@ -125,6 +130,10 @@ function animate() {
 
   requestAnimationFrame(animate);
 
+  gridContainer.rotateX(.01);
+  gridContainer.rotateY(.01);
+  gridContainer.rotateZ(.01);
+
   for (let i = 0; i < grid.length; i++) {
 
     for (let j = 0; j < grid[i].length; j++) {
@@ -136,8 +145,6 @@ function animate() {
         cube.rotateX(Math.random() * .05);
         cube.rotateY(Math.random() * .05);
         cube.rotateZ(Math.random() * .05);
-
-        //TODO: Rotate all cubes around origin
 
       }
 
