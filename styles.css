@@ -1,0 +1,14 @@
+body {
+  overflow: hidden;
+  background-color: #181818;
+}
+
+#appContainer {
+
+  width: 400px;
+  height: 300px;
+
+  max-width: 400px;
+  max-height: 300px;
+
+}

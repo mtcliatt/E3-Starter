@@ -5,89 +5,148 @@ let scene;
 let renderer;
 let controls;
 
+const gridRows = 5;
+const gridColumns = 5;
+const gridLayers = 5;
+
+const cubeSize = 1;
+const spacing = 2;
+
+const grid = [];
+
 init();
-createNeatScene();
-animateNeatScene();
+createWorld();
+animate();
 
 function init() {
-  const fov = 45;
-  const near = 1;
-  const far = 10000;
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const backgroundColor = new THREE.Color(0, .2, .3);
-  const opacity = 1.00;
 
-  camera = new THREE.PerspectiveCamera(fov, width / height, near, far);
+  const container = document.getElementById('appContainer');
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  // params: field of view, aspect, near frustrum plane, far frustrum plane
+  camera = new THREE.PerspectiveCamera(45, width / height, 1, 10000);
 
   scene = new THREE.Scene;
   scene.add(camera);
 
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, height);
-  renderer.setClearColor(backgroundColor, opacity);
+  renderer.setClearColor(new THREE.Color(0, 0, 0), 1.0);
+
+  container.appendChild(renderer.domElement);
 
   controls = new THREE.OrbitControls(camera);
 
-  document.body.appendChild(renderer.domElement);
+  window.addEventListener('resize', () => {
 
-  window.addEventListener('resize', function() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const container = document.getElementById('appContainer');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
 
     renderer.setSize(width, height);
 
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+
   });
+
 }
 
-function createNeatScene() {
+function createWorld() {
 
-  const cubeSize = 2;
-  const spacing = 5;
+  const midpoint = {
+    x: (gridColumns - 1) * (spacing + cubeSize) / 2,
+    y: (gridRows - 1) * (spacing + cubeSize) / 2,
+    z: (gridLayers - 1) * (spacing + cubeSize) / 2,
+  };
 
-  const rows = 15;
-  const columns = 15;
-  const layers = 15;
+  camera.position.set(midpoint.x, midpoint.y * 2, midpoint.z * 5);
 
-  const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+  for (let i = 0; i < gridRows; i++) {
 
-  // Places a cube object in scene at position specified in parameters
-  function createNeatCube(x = 0, y = 0, z = 0) {
-    const color = new THREE.Color(x / columns, y / rows, z / layers);
-    const material = new THREE.MeshBasicMaterial({
-      color: color
-    });
+    grid.push([]);
 
-    const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(x * spacing, y * spacing, z * spacing);
-    scene.add(cube);
-  }
+    for (let j = 0; j < gridColumns; j++) {
 
-  // Creates 3D grid of cubes
-  for (let x = 0; x < columns; x++) {
-    for (let y = 0; y < rows; y++) {
-      for (let z = 0; z < layers; z++) {
-        createNeatCube(x, y, z);
+      grid[i].push([]);
+
+      for (let k = 0; k < gridLayers; k++) {
+
+        const color = new THREE.Color(
+          (j / gridRows),
+          (i / gridColumns),
+          (k / gridLayers)
+        );
+
+        const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+        const material = new THREE.MeshBasicMaterial({ color });
+
+        const cube = new THREE.Mesh(geometry, material);
+
+        // Note j comes after i because j represents columns ie x-value
+        cube.position.set(
+          j * (spacing + cubeSize) - midpoint.x,
+          i * (spacing + cubeSize) - midpoint.y,
+          k * (spacing + cubeSize) - midpoint.z
+        );
+
+        scene.add(cube);
+        grid[i][j].push(cube);
+
       }
+
     }
+
   }
 
-  // Find the center of the mass of cubes
-  const xMidpoint = (columns * spacing) / 2;
-  const yMidpoint = (rows * spacing) / 2;
-  const zMidpoint = (layers * spacing) / 2;
+  // This creates a line on each axis, from -100 to 100.
+  for (let i = 0; i < 3 /* you */; i++) {
 
-  // Place the camera up and back from the grid for a better view
-  camera.position.set(-xMidpoint, yMidpoint * 3, zMidpoint * 5);
-  camera.lookAt(new THREE.Vector3(xMidpoint, yMidpoint, zMidpoint));
+    const material = new THREE.LineBasicMaterial();
+    const geometry = new THREE.Geometry();
+
+    // The beginning and ending points of the line
+    const p1 = new THREE.Vector3();
+    const p2 = new THREE.Vector3();
+
+    // Set the x, y, or z coordinate to 100 or -100
+    p1.setComponent(i, 100)
+    p2.setComponent(i, -100)
+
+    geometry.vertices.push(p1, p2);
+
+    scene.add(new THREE.Line(geometry, material));
+  }
+
 }
 
-function animateNeatScene() {
-  requestAnimationFrame(animateNeatScene);
+function animate() {
+
+  requestAnimationFrame(animate);
+
+  for (let i = 0; i < grid.length; i++) {
+
+    for (let j = 0; j < grid[i].length; j++) {
+
+      for (let k = 0; k < grid[i][j].length; k++) {
+
+        let cube = grid[i][j][k];
+
+        cube.rotateX(Math.random() * .05);
+        cube.rotateY(Math.random() * .05);
+        cube.rotateZ(Math.random() * .05);
+
+        //TODO: Rotate all cubes around origin
+
+      }
+
+    }
+
+  }
 
   controls.update();
 
   renderer.render(scene, camera);
+
 }
