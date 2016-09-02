@@ -15,7 +15,7 @@ let controls;
 
 init();
 
-createWorld();
+addGridOfCells();
 addAxisLines();
 
 animate();
@@ -58,8 +58,8 @@ function init() {
 
 }
 
-// Adds our elements to the scene
-function createWorld() {
+// Adds our cubes to the scene
+function addGridOfCells() {
 
   // The size each cell takes up, including spacing
   const sizePerCell = (cellSize + cellPadding);
