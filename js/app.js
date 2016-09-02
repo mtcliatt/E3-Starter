@@ -14,7 +14,10 @@ let renderer;
 let controls;
 
 init();
+
 createWorld();
+addAxisLines();
+
 animate();
 
 function init() {
@@ -110,10 +113,20 @@ function createWorld() {
   // Add the collection of cells to the scene
   scene.add(gridContainer);
 
+}
+
+function addAxisLines() {
+
+  const colors = [
+    new THREE.Color(1, 0, 0),
+    new THREE.Color(0, 1, 0),
+    new THREE.Color(0, 0, 1)
+  ];
+
   // Draw a line on each axis
   for (let i = 0; i < 3 /* you */; i++) {
 
-    const material = new THREE.LineBasicMaterial();
+    const material = new THREE.LineBasicMaterial({ color: colors[i] });
     const geometry = new THREE.Geometry();
 
     // The beginning and ending points of the line
