@@ -55,6 +55,7 @@ function init() {
 
 }
 
+// Adds our elements to the scene
 function createWorld() {
 
   // The size each cell takes up, including spacing
@@ -65,8 +66,11 @@ function createWorld() {
 
   const midpoint = new THREE.Vector3(totalGridSize / 2, totalGridSize / 2, totalGridSize / 2);
 
+  // Set the camera up and away from the scene for a better view
   camera.position.set(totalGridSize / 2, totalGridSize * 2, totalGridSize * 3);
 
+  // This is used to return the correct location that a cell should be placed,
+  // according to what row, column, and layer it should be at
   const getPositionFromIndex = (row, column, layer) => {
 
     return new THREE.Vector3(
@@ -75,12 +79,14 @@ function createWorld() {
 
   };
 
+  // Creates the grid of cells
   for (let row = 0; row < gridSize; row++) {
 
     for (let column = 0; column < gridSize; column++) {
 
       for (let layer = 0; layer < gridSize; layer++) {
 
+        // Generate a color based on the cell's location
         const color = new THREE.Color(
             (column / gridSize), (row / gridSize), (layer / gridSize)
         );
@@ -101,6 +107,7 @@ function createWorld() {
 
   }
 
+  // Add the collection of cells to the scene
   scene.add(gridContainer);
 
   // Draw a line on each axis
