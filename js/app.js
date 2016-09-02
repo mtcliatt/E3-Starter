@@ -21,7 +21,7 @@ function init() {
 
   gridContainer = new THREE.Object3D();
 
-  const container = document.getElementById('appContainer');
+  const container = document.getElementById('sceneDiv');
   const width = container.clientWidth;
   const height = container.clientHeight;
 
@@ -42,17 +42,13 @@ function init() {
   // Add the renderer object to the container we will be drawing on
   container.appendChild(renderer.domElement);
 
-  controls = new THREE.OrbitControls(camera);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   window.addEventListener('resize', () => {
 
-    const container = document.getElementById('appContainer');
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    renderer.setSize(container.clientWidth, container.clientHeight);
 
-    renderer.setSize(width, height);
-
-    camera.aspect = width / height;
+    camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
 
   });
@@ -95,8 +91,6 @@ function createWorld() {
 
         const cube = new THREE.Mesh(geometry, material);
         cube.position.copy(position);
-
-        console.log(position.x + ', ' + position.y + ', ' + position.z);
 
         // Add the cell to the container so we can rotate it with the others.
         gridContainer.add(cube);
