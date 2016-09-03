@@ -1,7 +1,7 @@
 # Electron.js & Three.js Starter Application
 
 <p align="center">
-<img src="MEDIA/e3_app.png" width="70%" height="70%">
+<img src="SCREENSHOTS/e3_app.png" width="70%" height="70%">
 <div align="center"><i>A basic template to start coding your first desktop application with 3D graphics.</i></div>
 </p>
 
